@@ -1,0 +1,28 @@
+name: ZAP
+
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  ZAP:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout git repository"
+        uses: actions/checkout@v4
+      - name: "Install Heroku CLI"
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
+        with:
+          heroku_api_key: HRKU-90822da0-9ae8-4371-b444-35d905682e91
+          heroku_app_name: "secdevops10" #Must be unique in Heroku
+          heroku_email: "mboeynaems@outlook.com"
+      - name: DAST OWASP ZAP scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+        # Target URL
+          target: https://.herokuapp.com/#/
