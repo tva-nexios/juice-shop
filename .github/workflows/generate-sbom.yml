@@ -1,16 +1,39 @@
-SCA:
-  runs-on: ubuntu-latest
-  steps:
-    - name: "Checkout git repository"
-      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
-    - name: "Use Node.js 18"
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    - run: npm install
-    - name: Create SBOM step
-      # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
-      run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
-    - name: curl
-      run: "curl -X POST -H 'X-Api-Key: odt_j5TEn8Qe_oPIpMDxzR8kXFsI6s8GJt8vQtixB4NIY' -F 'project=50138cf9-bce8-4251-aca7-98367a0323ee' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow checks out code, builds an image, performs a container image
+# scan with Anchore's Syft tool, and uploads the results to the GitHub Dependency
+# submission API.
+
+# For more information on the Anchore sbom-action usage
+# and parameters, see https://github.com/anchore/sbom-action. For more
+# information about the Anchore SBOM tool, Syft, see
+# https://github.com/anchore/syft
+name: Anchore Syft SBOM scan
+
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  SCA:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout git repository"
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
+      - name: "Use Node.js 18"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm install
+      - name: Create SBOM step
+        # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
+        run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
+      - name: curl
+        run: "curl -X POST -H 'X-Api-Key: odt_j5TEn8Qe_oPIpMDxzR8kXFsI6s8GJt8vQtixB4NIY' -F 'project=50138cf9-bce8-4251-aca7-98367a0323ee' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
 
