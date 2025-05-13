@@ -37,3 +37,6 @@ jobs:
         artifact-name: cyclonedx-bom.json
         dependency-snapshot: true
         template: cyclonedx-json
+    - name: curl
+      run: "curl -X POST -H 'X-Api-Key: odt_j5TEn8Qe_oPIpMDxzR8kXFsI6s8GJt8vQtixB4NIY' -F 'project=50138cf9-bce8-4251-aca7-98367a0323ee' -F 'bom=@cyclonedx-bom.json' https://dependency.portasecura.com/api/v1/bom"
+
