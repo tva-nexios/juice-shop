@@ -33,7 +33,8 @@ jobs:
       - run: npm install
       - name: Create SBOM step
         # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
-        run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
+        # sbom:xml cyclonedx-npm --omit=dev --output-format=XML  --output-file=bom.xml
+        run: yarn sbom:json --verbose package.json
       - name: curl
         run: "curl -X POST -H 'X-Api-Key: odt_j5TEn8Qe_oPIpMDxzR8kXFsI6s8GJt8vQtixB4NIY' -F 'project=50138cf9-bce8-4251-aca7-98367a0323ee' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
 
