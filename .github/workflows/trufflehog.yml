@@ -8,12 +8,18 @@ on:
 jobs:
   securityCheck:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Secret Scanning
+        id: trufflehog
         uses: trufflesecurity/trufflehog@main
         continue-on-error: true
         with:
