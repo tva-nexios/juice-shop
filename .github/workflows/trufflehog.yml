@@ -16,7 +16,6 @@ jobs:
       - name: Secret Scanning
         uses: trufflesecurity/trufflehog@main
         continue-on-error: true
-        continue-on-failure: true
         with:
           extra_args: --results=verified,unknown
           head: master
