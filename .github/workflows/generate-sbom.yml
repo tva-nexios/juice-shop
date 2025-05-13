@@ -1,31 +1,16 @@
-name: Generate SBOM
+SCA:
+  runs-on: ubuntu-latest
+  steps:
+    - name: "Checkout git repository"
+      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
+    - name: "Use Node.js 18"
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - run: npm install
+    - name: Create SBOM step
+      # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
+      run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
+    - name: curl
+      run: "curl -X POST -H 'X-Api-Key: odt_j5TEn8Qe_oPIpMDxzR8kXFsI6s8GJt8vQtixB4NIY' -F 'project=50138cf9-bce8-4251-aca7-98367a0323ee' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-jobs:
-  generate-sbom:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate SBOM
-        run: npx sbom
-
-      - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom
-          path: sbom.xml
